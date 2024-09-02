@@ -1,0 +1,21 @@
+name: "Class Labeler"
+on:
+  pull_request_target:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: github/issue-labeler@v3.4
+        with:
+          repo-token: "${{ github.token }}"
+          configuration-path: .github/class_labels.yml
+          enable-versioned-regex: 0
+          sync-labels: 1
