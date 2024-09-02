@@ -15,6 +15,9 @@ We would like it to work as it does in this solution: https://cunytechprep.githu
   - use this API URL: `https://opentdb.com/api.php?amount=1&category=9&type=multiple`
   - the API will return a random question with each call
 
+> [!CAUTION]
+> The Open Trivia Database API now enforces a **rate limit** of 5 seconds per request. If you make more than 1 request per 5 seconds you will receive a `429 Too Many Requests` response status code from the API.
+
 ### To submit
 
 - Make a fork of this repository
