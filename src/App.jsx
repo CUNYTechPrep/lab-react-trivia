@@ -6,13 +6,17 @@ import rawTriviaQuestion from "./lib/data";
 
 const triviaQuestion = rawTriviaQuestion.results[0];
 
+
 function App() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [questionData, setQuestionData] = useState(triviaQuestion);
+  const url = "https://opentdb.com/api.php?amount=1&category=9&type=multiple";
+
 
   const selectAnswer = (selection) => {
     setSelectedAnswer(selection);
   };
+
 
   let card;
 
@@ -37,11 +41,20 @@ function App() {
     );
   }
 
+  const getQuestion = (event)=>{fetch(url).then(response => response.json()).then(data=>{
+    setQuestionData(data.results[0]);
+    setSelectedAnswer(null);
+  }
+  )
+}
+
+
+
   return (
     <div className="w-100 my-5 d-flex justify-content-center align-items-center">
       <div style={{ maxWidth: "45%" }}>
         <h1 className="text-center">Trivia App</h1>
-        <button className="btn btn-success">Next Question</button>
+        <button className="btn btn-success" onClick={getQuestion}>Next Question</button>
         {card}
       </div>
     </div>
