@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ResultCard from "./components/ResultCard";
 import QuestionCard from "./components/QuestionCard";
 import { shuffleArray } from "./lib/utils";
@@ -16,14 +16,21 @@ function App() {
     setSelectedAnswer(selection);
   };
 
+
+
   const nextQuestion = () =>{
-    const nextIndex = questionIndex +1;
-    if(nextIndex <rawTriviaQuestion.results.length){
-      setQuestionIndex(nextIndex);
-      setQuestionData(rawTriviaQuestion.results[nextIndex]);
-      setSelectedAnswer(null);
-    }
-  };
+
+    fetch('https://opentdb.com/api.php?amount=1&category=9&type=multiple')
+    .then((response) => response.json())
+    .then((data) => {
+       console.log(data);
+       setQuestionData(data.results[0]);
+       setSelectedAnswer(null);
+    })
+    .catch((err) => {
+       console.log(err.message);
+    })
+    };
 
   let card;
 
