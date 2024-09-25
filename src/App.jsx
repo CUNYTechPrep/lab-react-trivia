@@ -14,6 +14,22 @@ function App() {
     setSelectedAnswer(selection);
   };
 
+  // It is having that rate limit issue, where if you click next question too fast
+  // it wont go to the next question but rather reload this question.
+
+  const fetchQuestion = async () => {
+    const response = await fetch(
+      "https://opentdb.com/api.php?amount=1&category=9&type=multiple"
+    );
+    const data = await response.json();
+    setQuestionData(data.results[0]);
+  };
+
+  const handleNextQuestion = () => {
+    setSelectedAnswer(null);
+    fetchQuestion();
+  };
+
   let card;
 
   if (selectedAnswer) {
@@ -41,7 +57,9 @@ function App() {
     <div className="w-100 my-5 d-flex justify-content-center align-items-center">
       <div style={{ maxWidth: "45%" }}>
         <h1 className="text-center">Trivia App</h1>
-        <button className="btn btn-success">Next Question</button>
+        <button className="btn btn-success" onClick={handleNextQuestion}>
+          Next Question
+        </button>
         {card}
       </div>
     </div>
