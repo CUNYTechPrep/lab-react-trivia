@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ResultCard from "./components/ResultCard";
 import QuestionCard from "./components/QuestionCard";
 import { shuffleArray } from "./lib/utils";
 import rawTriviaQuestion from "./lib/data";
 
 const triviaQuestion = rawTriviaQuestion.results[0];
+const TRIVIA_API = 'https://opentdb.com/api.php?amount=1&category=9&type=multiple'
 
 function App() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -15,33 +16,39 @@ function App() {
   };
 
   let card;
-
   if (selectedAnswer) {
-    card = (
-      <ResultCard
-        correct={selectedAnswer === questionData.correct_answer}
-        answer={questionData.correct_answer}
-      />
-    );
-  } else {
-    let options = [
-      questionData.correct_answer,
-      ...questionData.incorrect_answers,
-    ];
-    card = (
-      <QuestionCard
-        question={questionData.question}
-        options={shuffleArray(options)}
-        selectAnswer={selectAnswer}
-      />
-    );
-  }
+      card = (
+        <ResultCard
+          correct={selectedAnswer === questionData.correct_answer}
+          answer={questionData.correct_answer}
+        />
+      );
+    } else {
+      let options = [
+        questionData.correct_answer,
+        ...questionData.incorrect_answers,
+      ];
+      card = (
+        <QuestionCard
+          question={questionData.question}
+          options={shuffleArray(options)}
+          selectAnswer={selectAnswer}
+        />
+      );
+    }
 
+  const getNewTrivia = async () => {
+    const fetchQuestion = fetch(TRIVIA_API) 
+    fetchQuestion
+    .then((response) => response.json())
+    .then((data) => {setQuestionData(data.results[0]); setSelectedAnswer(null); console.log(data.results[0])})
+    .catch((error) => console.error('Error:', error))
+  }
   return (
     <div className="w-100 my-5 d-flex justify-content-center align-items-center">
       <div style={{ maxWidth: "45%" }}>
         <h1 className="text-center">Trivia App</h1>
-        <button className="btn btn-success">Next Question</button>
+        <button className="btn btn-success" onClick={getNewTrivia}>Next Question</button>
         {card}
       </div>
     </div>
