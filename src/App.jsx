@@ -21,7 +21,7 @@ function App() {
       setQuestionData(data.results[0]);
       setSelectedAnswer(null);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error(error);
     }
   };
 
