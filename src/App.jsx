@@ -1,48 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ResultCard from "./components/ResultCard";
 import QuestionCard from "./components/QuestionCard";
 import { shuffleArray } from "./lib/utils";
 import rawTriviaQuestion from "./lib/data";
 
 const triviaQuestion = rawTriviaQuestion.results[0];
+const TRIVIA_API = 'https://opentdb.com/api.php?amount=1&category=9&type=multiple';
 
 function App() {
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [questionData, setQuestionData] = useState(triviaQuestion);
+  const [currentAnswer, setCurrentAnswer] = useState(null);
+  const [currentQuestionData, setCurrentQuestionData] = useState(triviaQuestion);
 
-  const selectAnswer = (selection) => {
-    setSelectedAnswer(selection);
+  const handleAnswerSelect = (answer) => {
+    setCurrentAnswer(answer);
   };
 
-  let card;
-
-  if (selectedAnswer) {
-    card = (
+  let cardDisplay;
+  if (currentAnswer) {
+    cardDisplay = (
       <ResultCard
-        correct={selectedAnswer === questionData.correct_answer}
-        answer={questionData.correct_answer}
+        correct={currentAnswer === currentQuestionData.correct_answer}
+        answer={currentQuestionData.correct_answer}
       />
     );
   } else {
-    let options = [
-      questionData.correct_answer,
-      ...questionData.incorrect_answers,
+    let answerOptions = [
+      currentQuestionData.correct_answer,
+      ...currentQuestionData.incorrect_answers,
     ];
-    card = (
+    cardDisplay = (
       <QuestionCard
-        question={questionData.question}
-        options={shuffleArray(options)}
-        selectAnswer={selectAnswer}
+        question={currentQuestionData.question}
+        options={shuffleArray(answerOptions)}
+        selectAnswer={handleAnswerSelect}
       />
     );
   }
+
+  const fetchNewTrivia = async () => {
+    const triviaFetch = fetch(TRIVIA_API);
+    triviaFetch
+      .then((response) => response.json())
+      .then((data) => {
+        setCurrentQuestionData(data.results[0]);
+        setCurrentAnswer(null);
+        console.log(data.results[0]);
+      })
+      .catch((error) => console.error('Error:', error));
+  };
 
   return (
     <div className="w-100 my-5 d-flex justify-content-center align-items-center">
       <div style={{ maxWidth: "45%" }}>
         <h1 className="text-center">Trivia App</h1>
-        <button className="btn btn-success">Next Question</button>
-        {card}
+        <button className="btn btn-success" onClick={fetchNewTrivia}>Next Question</button>
+        {cardDisplay}
       </div>
     </div>
   );
