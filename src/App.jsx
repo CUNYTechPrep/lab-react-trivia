@@ -16,6 +16,12 @@ function App() {
 
   let card;
 
+
+  function Trivia () {
+    fetch('https://opentdb.com/api.php?amount=1&category=9&type=multiple').then((response) => response.json()).then((data) => {setQuestionData(data.results[0]); setSelectedAnswer(null); console.log(data.results[0])});
+  }
+
+
   if (selectedAnswer) {
     card = (
       <ResultCard
@@ -41,7 +47,7 @@ function App() {
     <div className="w-100 my-5 d-flex justify-content-center align-items-center">
       <div style={{ maxWidth: "45%" }}>
         <h1 className="text-center">Trivia App</h1>
-        <button className="btn btn-success">Next Question</button>
+        <button className="btn btn-success" onClick={Trivia} >Next Question</button>
         {card}
       </div>
     </div>
