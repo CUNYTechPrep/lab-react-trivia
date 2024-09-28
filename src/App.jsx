@@ -1,14 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import ResultCard from "./components/ResultCard";
 import QuestionCard from "./components/QuestionCard";
 import { shuffleArray } from "./lib/utils";
-import rawTriviaQuestion from "./lib/data";
 
-const triviaQuestion = rawTriviaQuestion.results[0];
 
 function App() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [questionData, setQuestionData] = useState(triviaQuestion);
+  const [questionData, setQuestionData] = useState(null);
+
+
+  const getNewQuestion = async () => {
+    try{
+      const response = await fetch("https://opentdb.com/api.php?amount=1&category=9&type=multiple");
+      const data = await response.json();
+      setQuestionData(data.results[0]);
+      setSelectedAnswer(null); 
+      
+    }
+
+    catch(error){
+      console.log("Error fetching question:", error);
+    }
+  };
+
+  useEffect(() => {
+    getNewQuestion(); 
+  }, []);
+
+
 
   const selectAnswer = (selection) => {
     setSelectedAnswer(selection);
@@ -16,7 +35,9 @@ function App() {
 
   let card;
 
-  if (selectedAnswer) {
+  
+   if (selectedAnswer) {
+    
     card = (
       <ResultCard
         correct={selectedAnswer === questionData.correct_answer}
@@ -41,7 +62,7 @@ function App() {
     <div className="w-100 my-5 d-flex justify-content-center align-items-center">
       <div style={{ maxWidth: "45%" }}>
         <h1 className="text-center">Trivia App</h1>
-        <button className="btn btn-success">Next Question</button>
+        <button className="btn btn-success" onClick ={getNewQuestion}>Next Question</button>
         {card}
       </div>
     </div>
